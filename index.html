@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voltage Lord - Portfolio</title>
+    <link rel="stylesheet" href="port.css">
+    <script defer src="port.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- Intro Text -->
+    <div id="intro">
+        <h1>Welcome to Voltage Lord Portfolio</h1>
+    </div>
+
+    <!-- Main Content -->
+    <div id="content" class="hidden">
+        
+        <!-- Header -->
+        <header>
+            <h1><i class="fas fa-bolt"></i> Voltage Lord</h1>
+            <nav>
+                <button onclick="scrollToSection('about')"><i class="fas fa-user"></i> About</button>
+                <button onclick="scrollToSection('story')"><i class="fas fa-book"></i> Story</button>
+                <button onclick="scrollToSection('skills')"><i class="fas fa-code"></i> Skills</button>
+                <button onclick="scrollToSection('projects')"><i class="fas fa-laptop-code"></i> Projects</button>
+                <button onclick="scrollToSection('gallery')"><i class="fas fa-images"></i> Gallery</button>
+                <button onclick="scrollToSection('contact')"><i class="fas fa-envelope"></i> Connect</button>
+            </nav>
+        </header>
+
+        <!-- About Section -->
+        <section id="about" class="glass">
+            <h2>About Me</h2>
+            <img src="voltage.jpg" alt="Voltage Lord">
+            <p><i class="fas fa-user"></i> Odunayo Ayinla (Voltage Lord)</p>
+            <p><i class="fas fa-calendar"></i> Age: 17</p>
+            <p><i class="fas fa-birthday-cake"></i> Birthday: January 6, 2008</p>
+            <p><i class="fas fa-laptop-code"></i> Specialty: API & Frontend Development</p>
+        </section>
+
+        <!-- Story Section -->
+        <section id="story" class="glass">
+            <h2>My Journey</h2>
+            <p>Hello! I'm Odunayo Ayinla, also known as Voltage Lord. My journey into tech started in 2020 as a self-taught developer, learning under experienced mentors. </p>
+            <p>In 2022, I collaborated with **Silent**, the developer of Demon Killer V5 WhatsApp bot. Although our partnership ended early, it inspired me to push further.</p>
+            <p>By January 2023, I started learning **Python** to build powerful APIs. Since then, I’ve created several projects, including APIs and frontend applications.</p>
+            <p>Now, I’m focused on **building innovative solutions** and **expanding my skill set**. Let’s create something amazing together!</p>
+
+            <!-- Bouncing Balls Animation -->
+            <div class="bouncing-balls">
+                <span class="ball"></span>
+                <span class="ball"></span>
+                <span class="ball"></span>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="glass">
+            <h2>Skills</h2>
+            <p><i class="fab fa-js"></i> JavaScript</p>
+            <p><i class="fab fa-python"></i> Python (Learning)</p>
+            <p><i class="fab fa-html5"></i> HTML</p>
+            <p><i class="fab fa-css3-alt"></i> CSS</p>
+            <h3>Tools & Frameworks</h3>
+            <p><i class="fab fa-node"></i> Node.js</p>
+            <p><i class="fas fa-flask"></i> Flask</p>
+            <p><i class="fab fa-python"></i> Django</p>
+            <p><i class="fas fa-image"></i> Pillow</p>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="glass">
+            <h2>Projects</h2>
+            <h3>APIs</h3>
+            <button onclick="openLink('https://voltagelord-volt-audio.hf.space')"><i class="fas fa-server"></i> Volt Audio API</button>
+            <button onclick="openLink('https://voltagelord-volt-translator.hf.space')"><i class="fas fa-server"></i> Volt Translator API</button>
+
+            <h3>Frontend Projects</h3>
+            <button onclick="openLink('https://volt-audio.onrender.com')"><i class="fas fa-globe"></i> Volt Audio Frontend</button>
+            <button onclick="openLink('https://volt-translator.onrender.com/')"><i class="fas fa-globe"></i> Volt Translator Frontend</button>
+
+            <h3>Upcoming Projects</h3>
+            <p><i class ="fas fa-camera"></i>Voltura</p>
+            <p><i class ="fas fa-robot"></i> Volt AI</p>
+        </section>
+
+        <!-- Projects Gallery (Auto-Sliding Carousel) -->
+        <section id="gallery">
+  <h2>Projects Gallery</h2>
+  <div class="carousel">
+    <img src="translator.jpg" alt="Translator Project">
+    <img src="tts.jpg" alt="TTS Project">
+  </div>
+</section>
+        
+
+        <!-- Contact Section -->
+        <section id="contact" class="glass">
+            <h2>Connect With Me</h2>
+            <button onclick="openLink('https://wa.me/2347045674902')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+            <button onclick="openLink('https://t.me/Voltage_lord')"><i class="fab fa-telegram"></i> Telegram</button>
+            <button onclick="openLink('https://www.instagram.com/therealvoltage_lord?')"><i class="fab fa-instagram"></i> Instagram</button>
+            <button onclick="openLink('https://github.com/TherealVoltageLord')"><i class="fab fa-github"></i> GitHub</button>
+            <button onclick="openLink('mailto:odunayoayinla23@gmail.com')"><i class="fas fa-envelope"></i> Email</button>
+        </section>
+
+    </div>
+
+</body>
+</html>
