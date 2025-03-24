@@ -1,10 +1,10 @@
 function showNotification() {
   const notification = document.getElementById('custom-notification');
-notification.classList.remove('hidden');
-notification.classList.add('show');
-setTimeout(() => {notification.classList.remove('show');
+notification.classList.remove('notification-hidden');
+notification.classList.add('notification-show');
+setTimeout(() => {notification.classList.remove('notification-show');
                   setTimeout(() =>
-                    notification.classList.add('hidden'),
+                    notification.classList.add('notification-hidden'),
 300);
 }, 4000);
 }
