@@ -391,7 +391,7 @@ header p {
 #review-form button:hover {
   background: #00cc66;
 }
-.notification {
+#custom-notification {
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -409,9 +409,10 @@ header p {
   transition: all 0.3s ease-out;
   z-index: 1000;
   max-width: 300px;
+  border-left: 4px solid #00ff88;
 }
 
-.notification i {
+#custom-notification i {
   font-size: 20px;
   color: #00ff88;
 }
