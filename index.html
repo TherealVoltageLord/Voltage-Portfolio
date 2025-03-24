@@ -18,6 +18,7 @@
       <i class="fas fa-moon"></i>
     </div>
 
+    <!-- Header Section -->
     <header>
       <div class="profile-pic">
         <img src="voltage.jpg" alt="Voltage Lord">
@@ -27,7 +28,8 @@
       <p>API Developer | Frontend Developer | NodeJS Enthusiast</p>
       <a href="#contact" class="cta-button bounce">Hire Me</a>
     </header>
-    
+
+    <!-- About Section -->
     <section id="about" class="scroll-animation">
       <div class="info-tab">
         <h3><i class="fas fa-book"></i> About Me</h3>
@@ -147,22 +149,42 @@
       </div>
     </section>
 
-   <!-- Testimonials Section -->
+
 <section id="testimonials" class="scroll-animation">
-  <h3>Testimonials</h3>
-  <p class="testimonial-intro" id="testimonial-intro">
-  </p>
+  <h3>Testimonials <i class="fas fa-comment-dots"></i></h3>
+  <p class="testimonial-intro" id="testimonial-intro"></p>
+  
   <div class="testimonial-container">
     <button class="carousel-arrow left-arrow" aria-label="Previous Testimonial">
       <i class="fas fa-chevron-left"></i>
     </button>
     <div class="testimonial-carousel" id="testimonial-carousel">
+      <!-- Dynamically loaded testimonials -->
     </div>
     <button class="carousel-arrow right-arrow" aria-label="Next Testimonial">
       <i class="fas fa-chevron-right"></i>
     </button>
   </div>
 </section>
+<!-- Review Form Section -->
+<section id="add-review" class="scroll-animation">
+  <h3>Leave Your Review <i class="fas fa-book"></i></h3>
+  <form id="review-form">
+    <div class="form-group">
+      <div class="input-with-icon">
+        <i class="fas fa-user input-icon"></i>
+        <input type="text" id="review-name" placeholder="Your Name" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <textarea id="review-text" rows="4" placeholder="Your honest feedback..." required></textarea>
+    </div>
+    <button type="submit" class="cta-button">
+      <i class="fas fa-paper-plane"></i> Submit Review
+    </button>
+  </form>
+</section>
+    <!-- Contact Section -->
     <section id="contact" class="scroll-animation">
       <h3>Contact Me</h3>
       <div class="contact-links">
@@ -174,7 +196,8 @@
       </div>
     </section>
   </div>
-  
+
+  <!-- Footer -->
   <footer>
     <p>&copy; 2025 Voltage Lord. All rights reserved.</p>
     <div class="social-links">
@@ -183,7 +206,9 @@
       <a href="https://wa.me/2347045674902" target="_blank"><i class="fab fa-whatsapp"></i></a>
     </div>
   </footer>
-  
+
+  <!-- Scripts -->
   <script src="abb.js"></script>
+  <script src="review.js"></script>
 </body>
 </html>
