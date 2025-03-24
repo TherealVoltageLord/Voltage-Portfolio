@@ -391,6 +391,54 @@ header p {
 #review-form button:hover {
   background: #00cc66;
 }
+.notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(30, 30, 47, 0.95);
+  color: #00ff88;
+  padding: 15px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease-out;
+  z-index: 1000;
+  max-width: 300px;
+}
+
+.notification i {
+  font-size: 20px;
+  color: #00ff88;
+}
+
+.notification.hidden {
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
+
+.notification.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.notification.success {
+  border-left: 4px solid #00ff88;
+}
+
+.notification.error {
+  color: #ff6b6b;
+  border-left: 4px solid #ff6b6b;
+}
+
+.notification.error i {
+  color: #ff6b6b;
+}
 
 .contact-links {
   display: flex;
