@@ -1,3 +1,13 @@
+function showNotification() {
+  const notification = document.getElementById('custom-notification');
+notification.classList.remove('hidden');
+notification.classList.add('show');
+setTimeout(() => {notification.classList.remove('show');
+                  setTimeout(() =>
+                    notification.classList.add('hidden'),
+300);
+}, 4000);
+}
 document.getElementById('review-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
