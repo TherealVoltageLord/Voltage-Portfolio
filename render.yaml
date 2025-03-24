@@ -1,0 +1,12 @@
+services:
+  - name: Voltage-Portfolio
+    type: web
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_VERSION
+        value: 18
+    plan: free
+    region: oregon
+    autoDeploy: true
