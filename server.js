@@ -1,43 +1,43 @@
 const express = require('express');
 const fs = require('fs');
-const path = require('path');
 const cors = require('cors');
 
 const app = express();
+const PORT = 3000;
+const DATA_FILE = 'test.json';
+
 app.use(express.json());
 app.use(cors());
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-app.get('/styles.css', (req, res) => {
-  res.sendFile(path.join(__dirname, 'styles.css'));
-});
-app.get('/abb.js', (req, res) => {
-  res.sendFile(path.join(__dirname, 'abb.js'));
-});
-app.get('/api/reviews', (req, res) => {
-  fs.readFile('test.json', (err, data) => {
-    if (err) return res.status(500).json({ error: 'Error reading data' });
-    res.json(JSON.parse(data));
-  });
-});
 
-app.post('/api/reviews', (req, res) => {
-  const { name, text } = req.body;
-  if (!name || !text) return res.status(400).json({ error: 'Name and text required' });
+app.post('/add-review', (req, res) => {
+  const { author, text } = req.body;
 
-  fs.readFile('test.json', (err, data) => {
-    if (err) return res.status(500).json({ error: 'Error reading data' });
+  if (!author || !text) {
+    return res.status(400).json({ error: 'Name and review text are required.' });
+  }
+
+  fs.readFile(DATA_FILE, 'utf8', (err, data) => {
+    if (err) return res.status(500).json({ error: 'Error reading file' });
+
+    let jsonData;
     
-    const jsonData = JSON.parse(data);
-    jsonData.testimonials.push({ text, author: name });
+    try {
+      jsonData = JSON.parse(data);
+      if (!Array.isArray(jsonData.testimonials)) {
+        jsonData.testimonials = [];
+      }
+    } catch (error) {
+      return res.status(500).json({ error: 'Invalid JSON structure' });
+    }
 
-    fs.writeFile('test.json', JSON.stringify(jsonData, null, 2), (err) => {
-      if (err) return res.status(500).json({ error: 'Error saving data' });
-      res.json({ success: true });
+    jsonData.testimonials.push({ author, text });
+
+    fs.writeFile(DATA_FILE, JSON.stringify(jsonData, null, 2), (err) => {
+      if (err) return res.status(500).json({ error: 'Error saving review' });
+
+      res.json({ message: 'Review added successfully!', newReview: { author, text } });
     });
   });
 });
 
-const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
