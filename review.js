@@ -12,7 +12,7 @@ document.getElementById('review-form').addEventListener('submit', async (e) => {
   const reviewData = { author: name, text };
 
   try {
-    const response = await fetch('http://localhost:3000/add-review', {
+    const response = await fetch('/add-review', {  // Relative URL works on Render too
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(reviewData),
