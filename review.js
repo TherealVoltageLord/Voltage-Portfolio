@@ -30,7 +30,7 @@ document.getElementById('review-form').addEventListener('submit', async (e) => {
 
     if (response.ok) {
       showNotification();
-      document.getElementById(review-form).reset();
+      document.getElementById('review-form').reset();
     } else {
       alert('Failed to submit review.');
     }
