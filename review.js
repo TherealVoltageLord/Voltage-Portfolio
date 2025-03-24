@@ -29,8 +29,8 @@ document.getElementById('review-form').addEventListener('submit', async (e) => {
     });
 
     if (response.ok) {
-      alert('Review submitted successfully!');
-      document.getElementById('review-form').reset();
+      showNotification();
+      document.getElementById(review-form).reset();
     } else {
       alert('Failed to submit review.');
     }
