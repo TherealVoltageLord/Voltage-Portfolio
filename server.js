@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const cors = require('cors');
+const path = require("path")
 
 const app = express();
 const PORT = 3000;
@@ -8,6 +9,7 @@ const DATA_FILE = 'test.json';
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static(__dirname));
 
 app.post('/add-review', (req, res) => {
   const { author, text } = req.body;
@@ -38,6 +40,10 @@ app.post('/add-review', (req, res) => {
       res.json({ message: 'Review added successfully!', newReview: { author, text } });
     });
   });
+});
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
