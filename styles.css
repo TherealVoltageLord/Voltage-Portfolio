@@ -414,9 +414,21 @@ header p {
 
 #custom-notification i {
   font-size: 20px;
-  color: #00ff88;
 }
-
+#custom-notification p{
+  margin: 0;
+  line-height: 1.5;
+}
+#custom-notification p i{
+  font-size: 14px;
+  margin:0 2px;
+}
+#custom-notification.success {
+  color: #00ff88;
+  border-left-color: #00ff88;
+  box-shadow:0 4px 15px rgba(0, 255, 136, 0.2);
+  border-color: rgba(0, 255,136, 0.3);
+}
 .notification.hidden {
   opacity: 0;
   transform: translateY(20px);
@@ -428,16 +440,18 @@ header p {
   transform: translateY(0);
 }
 
-.notification.success {
-  border-left: 4px solid #00ff88;
+#custom-notification.success .fas fa-check-circle{
+  color: #00ff88;
 }
 
-.notification.error {
+#custom-notification.error {
   color: #ff6b6b;
-  border-left: 4px solid #ff6b6b;
+  border-left-color:#ff6b6b;
+  box-shadow:0 4px 15px rgba(255, 107,107, 0.2);
+  border-color: rgba(255, 107, 107, 0.3);
 }
 
-.notification.error i {
+#custom-notification.error .fas fa-exclamation-circle{
   color: #ff6b6b;
 }
 
