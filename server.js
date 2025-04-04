@@ -1,49 +1,108 @@
 const express = require('express');
+const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
-const path = require("path")
 
 const app = express();
-const PORT = 3000;
-const DATA_FILE = 'test.json';
+const PORT = process.env.PORT || 3000;
+const TESTIMONIALS_FILE = path.join(__dirname, 'test.json');
 
-app.use(express.json());
+// Create test.json if it doesn't exist
+if (!fs.existsSync(TESTIMONIALS_FILE)) {
+    fs.writeFileSync(TESTIMONIALS_FILE, JSON.stringify({
+        intro: "Here's what people say about working with Voltage Lord:",
+        testimonials: []
+    }, null, 2));
+}
+
+// Middleware
 app.use(cors());
-app.use(express.static(__dirname));
+app.use(express.json());
+app.use(express.static(path.join(__dirname)));
 
-app.post('/add-review', (req, res) => {
-  const { author, text } = req.body;
-
-  if (!author || !text) {
-    return res.status(400).json({ error: 'Name and review text are required.' });
-  }
-
-  fs.readFile(DATA_FILE, 'utf8', (err, data) => {
-    if (err) return res.status(500).json({ error: 'Error reading file' });
-
-    let jsonData;
-    
+// Helper function to read testimonials
+const getTestimonials = () => {
     try {
-      jsonData = JSON.parse(data);
-      if (!Array.isArray(jsonData.testimonials)) {
-        jsonData.testimonials = [];
-      }
-    } catch (error) {
-      return res.status(500).json({ error: 'Invalid JSON structure' });
+        const rawData = fs.readFileSync(TESTIMONIALS_FILE);
+        return JSON.parse(rawData);
+    } catch (err) {
+        console.error('Error reading testimonials:', err);
+        return {
+            intro: "Here's what people say about working with Voltage Lord:",
+            testimonials: []
+        };
+    }
+};
+
+// Helper function to save testimonials
+const saveTestimonials = (data) => {
+    try {
+        fs.writeFileSync(TESTIMONIALS_FILE, JSON.stringify(data, null, 2));
+        return true;
+    } catch (err) {
+        console.error('Error saving testimonials:', err);
+        return false;
+    }
+};
+
+// API Endpoints
+
+// Get all testimonials
+app.get('/api/testimonials', (req, res) => {
+    const testimonials = getTestimonials();
+    res.json(testimonials);
+});
+
+// Add new testimonial
+app.post('/api/testimonials', (req, res) => {
+    const { author, text } = req.body;
+    
+    if (!author || !text) {
+        return res.status(400).json({ 
+            success: false, 
+            message: 'Both name and testimonial text are required' 
+        });
     }
 
-    jsonData.testimonials.push({ author, text });
+    const testimonialsData = getTestimonials();
+    const newTestimonial = { text, author };
+    
+    // Add new testimonial
+    testimonialsData.testimonials.push(newTestimonial);
+    
+    if (saveTestimonials(testimonialsData)) {
+        res.json({ 
+            success: true, 
+            message: 'Testimonial added successfully',
+            testimonial: newTestimonial
+        });
+    } else {
+        res.status(500).json({ 
+            success: false, 
+            message: 'Failed to save testimonial' 
+        });
+    }
+});
 
-    fs.writeFile(DATA_FILE, JSON.stringify(jsonData, null, 2), (err) => {
-      if (err) return res.status(500).json({ error: 'Error saving review' });
+// Serve static files
+app.use(express.static(path.join(__dirname)));
 
-      res.json({ message: 'Review added successfully!', newReview: { author, text } });
+// Handle client-side routing
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ 
+        success: false, 
+        message: 'Something went wrong!' 
     });
-  });
 });
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Testimonials file: ${TESTIMONIALS_FILE}`);
 });
-
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
