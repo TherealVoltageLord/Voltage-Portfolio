@@ -9,7 +9,7 @@
   <meta name="author" content="Odunayo Ayinla">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css"> <!-- Ensure this file exists and is correctly linked -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
@@ -149,45 +149,47 @@
       </div>
     </section>
 
-
-<section id="testimonials" class="scroll-animation">
-  <h3>Testimonials <i class="fas fa-comment-dots"></i></h3>
-  <p class="testimonial-intro" id="testimonial-intro"></p>
-  
-  <div class="testimonial-container">
-    <button class="carousel-arrow left-arrow" aria-label="Previous Testimonial">
-      <i class="fas fa-chevron-left"></i>
-    </button>
-    <div class="testimonial-carousel" id="testimonial-carousel">
-      <!-- Dynamically loaded testimonials -->
-    </div>
-    <button class="carousel-arrow right-arrow" aria-label="Next Testimonial">
-      <i class="fas fa-chevron-right"></i>
-    </button>
-  </div>
-</section>
-<!-- Review Form Section -->
-<section id="add-review" class="scroll-animation">
-  <h3>Leave Your Review <i class="fas fa-book"></i></h3>
-  <form id="review-form">
-    <div class="form-group">
-      <div class="input-with-icon">
-        <i class="fas fa-user input-icon"></i>
-        <input type="text" id="review-name" placeholder="Your Name" required>
+    <section id="testimonials" class="scroll-animation">
+      <h3>Testimonials <i class="fas fa-comment-dots"></i></h3>
+      <p class="testimonial-intro" id="testimonial-intro"></p>
+      
+      <div class="testimonial-container">
+        <button class="carousel-arrow left-arrow" aria-label="Previous Testimonial">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="testimonial-carousel" id="testimonial-carousel">
+          <!-- Dynamically loaded testimonials -->
+        </div>
+        <button class="carousel-arrow right-arrow" aria-label="Next Testimonial">
+          <i class="fas fa-chevron-right"></i>
+        </button>
       </div>
-    </div>
-    <div class="form-group">
-      <textarea id="review-text" rows="4" placeholder="Your honest feedback..." required></textarea>
-    </div>
-    <button type="submit" class="cta-button">
-      <i class="fas fa-paper-plane"></i> Submit Review
-    </button>
-  </form>
-</section>
+    </section>
+
+    <!-- Review Form Section -->
+    <section id="add-review" class="scroll-animation">
+      <h3>Leave Your Review <i class="fas fa-book"></i></h3>
+      <form id="review-form">
+        <div class="form-group">
+          <div class="input-with-icon">
+            <i class="fas fa-user input-icon"></i>
+            <input type="text" id="review-name" placeholder="Your Name" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <textarea id="review-text" rows="4" placeholder="Your honest feedback..." required></textarea>
+        </div>
+        <button type="submit" class="cta-button">
+          <i class="fas fa-paper-plane"></i> Submit Review
+        </button>
+      </form>
+    </section>
+
     <div id="custom-notification" class="notification-hidden">
       <i class="fas fa-check-circle"></i>
-        <p>Thanks for your review <i class="fas fa-heart"></i><br>Looking forward to working with you <i class="fas fa-handshake"></i></p>
-      </div>
+      <p>Thanks for your review <i class="fas fa-heart"></i><br>Looking forward to working with you <i class="fas fa-handshake"></i></p>
+    </div>
+
     <!-- Contact Section -->
     <section id="contact" class="scroll-animation">
       <h3>Contact Me</h3>
@@ -211,8 +213,6 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script src="abb.js"></script>
-  <script src="review.js"></script>
 </body>
 </html>
