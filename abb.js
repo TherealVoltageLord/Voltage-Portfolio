@@ -1,223 +1,243 @@
-const modeToggle = document.querySelector('.mode-toggle');
-const body = document.body;
-const sections = document.querySelectorAll('.scroll-animation');
+// DOM Elements
 const reviewForm = document.getElementById('review-form');
+const testimonialsContainer = document.getElementById('testimonials-container');
+const testimonialIntro = document.getElementById('testimonial-intro');
+const notification = document.getElementById('notification');
+const notificationMessage = document.getElementById('notification-message');
+const modeToggle = document.querySelector('.mode-toggle');
 
-// Initialize the page
+// Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-    initializeTheme();
-    setupScrollAnimations();
     loadTestimonials();
-    setupSmoothScrolling();
+    setupVoiceControl();
+    setupScrollAnimations();
+    setupModeToggle();
 });
 
-// Theme Management
-function initializeTheme() {
-    const savedMode = localStorage.getItem('mode');
-    if (savedMode) {
-        body.classList.add(savedMode);
-        updateModeToggleIcon(savedMode);
+// Notification system
+function showNotification(message, isError = false, duration = 3000) {
+    notificationMessage.textContent = message;
+    notification.className = 'notification show ' + (isError ? 'error' : 'success');
+    
+    if (duration > 0) {
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, duration);
     }
 }
 
-function updateModeToggleIcon(mode) {
-    modeToggle.innerHTML = mode === 'light-mode' 
-        ? '<i class="fas fa-sun"></i>' 
-        : '<i class="fas fa-moon"></i>';
+// Load testimonials from test.json
+async function loadTestimonials() {
+    try {
+        const response = await fetch('/api/testimonials');
+        if (!response.ok) throw new Error('Failed to load testimonials');
+        
+        const data = await response.json();
+        
+        // Set intro text from test.json
+        testimonialIntro.textContent = data.intro;
+        
+        // Render testimonials from test.json
+        renderTestimonials(data.testimonials || []);
+        
+    } catch (error) {
+        console.error('Error loading testimonials:', error);
+        showNotification('Failed to load testimonials. Please try again later.', true);
+        renderTestimonials([]); // Show empty state
+    }
 }
 
-modeToggle.addEventListener('click', () => {
-    body.classList.toggle('light-mode');
-    const isLightMode = body.classList.contains('light-mode');
-    const mode = isLightMode ? 'light-mode' : 'dark-mode';
-    updateModeToggleIcon(mode);
-    localStorage.setItem('mode', mode);
+// Render testimonials to the page
+function renderTestimonials(testimonials) {
+    testimonialsContainer.innerHTML = testimonials.length ? 
+        testimonials.map(testimonial => `
+            <div class="testimonial-item">
+                <div class="testimonial-content">
+                    <p>"${sanitizeInput(testimonial.text)}"</p>
+                </div>
+                <div class="testimonial-author">
+                    <span>- ${sanitizeInput(testimonial.author)}</span>
+                    ${testimonial.date ? `<small>${formatDate(testimonial.date)}</small>` : ''}
+                </div>
+            </div>
+        `).join('') : `
+            <div class="testimonial-item empty">
+                <p>No testimonials yet. Be the first to share your experience!</p>
+            </div>
+        `;
+    
+    animateTestimonials();
+}
+
+// Handle form submission
+reviewForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const submitBtn = reviewForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    
+    const name = document.getElementById('review-name').value.trim();
+    const text = document.getElementById('review-text').value.trim();
+    
+    // Validation
+    if (!name || !text) {
+        showNotification('Please fill in all fields', true);
+        submitBtn.disabled = false;
+        return;
+    }
+    
+    try {
+        showNotification('Submitting your review...', false);
+        
+        const response = await fetch('/api/testimonials', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                author: sanitizeInput(name), 
+                text: sanitizeInput(text) 
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(result.message || 'Failed to submit review');
+        }
+        
+        showNotification('Thank you for your review!', false);
+        reviewForm.reset();
+        await loadTestimonials(); // Refresh testimonials
+        
+    } catch (error) {
+        console.error('Error submitting review:', error);
+        showNotification(error.message || 'Failed to submit review. Please try again.', true);
+    } finally {
+        submitBtn.disabled = false;
+    }
 });
 
-// Scroll Animations
+// Animation for testimonials
+function animateTestimonials() {
+    const items = document.querySelectorAll('.testimonial-item');
+    items.forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+        item.style.transition = `all 0.5s ease ${index * 0.1}s`;
+        
+        setTimeout(() => {
+            item.style.opacity = '1';
+            item.style.transform = 'translateY(0)';
+        }, 50);
+    });
+}
+
+// Scroll animations
 function setupScrollAnimations() {
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
+        entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
             }
         });
     }, { threshold: 0.1 });
 
-    sections.forEach((section) => observer.observe(section));
-}
-
-// Smooth Scrolling
-function setupSmoothScrolling() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
+    document.querySelectorAll('.scroll-animation').forEach(section => {
+        observer.observe(section);
     });
 }
 
-// Typewriter Effect
-function typewriterEffect(element, text, speed = 50) {
-    let i = 0;
-    let isDeleting = false;
-    
-    function type() {
-        const currentText = text.substring(0, i);
-        element.textContent = currentText;
-        
-        if (!isDeleting && i === text.length) {
-            setTimeout(() => (isDeleting = true), 4000);
-        } else if (isDeleting && i === 0) {
-            setTimeout(() => (isDeleting = false), 2000);
-        }
-        
-        i += isDeleting ? -1 : 1;
-        setTimeout(type, isDeleting ? speed / 2 : speed);
-    }
-    
-    type();
-}
-
-// Testimonials Management
-async function loadTestimonials() {
-    try {
-        const response = await fetch('test.json');
-        if (!response.ok) throw new Error('Failed to load testimonials');
-        
-        const data = await response.json();
-        const { intro, testimonials } = data;
-        
-        displayTestimonials(intro, testimonials);
-    } catch (error) {
-        console.error('Error loading testimonials:', error);
-        displayTestimonials(
-            "Here's what people say about working with me:",
-            getDefaultTestimonials()
-        );
-    }
-}
-
-function getDefaultTestimonials() {
-    return [
-        {
-            text: "Voltage Lord delivered an exceptional API solution that perfectly met our requirements.",
-            author: "Tech Startup CEO"
-        },
-        {
-            text: "Working with Voltage Lord was a pleasure. He transformed our frontend into a modern interface.",
-            author: "Product Manager"
-        }
-    ];
-}
-
-function displayTestimonials(intro, testimonials) {
-    const testimonialIntro = document.getElementById('testimonial-intro');
-    typewriterEffect(testimonialIntro, intro);
-    
-    const carousel = document.getElementById('testimonial-carousel');
-    carousel.innerHTML = testimonials.map(testimonial => `
-        <div class="testimonial-card">
-            <p>${testimonial.text}</p>
-            <span>- ${testimonial.author}</span>
-        </div>
-    `).join('');
-
-    setupCarouselNavigation(testimonials.length);
-}
-
-function setupCarouselNavigation(totalTestimonials) {
-    let currentIndex = 0;
-    const carousel = document.getElementById('testimonial-carousel');
-    
-    function showTestimonial(index) {
-        carousel.style.transform = `translateX(-${index * 100}%)`;
-    }
-    
-    // Auto-rotate
-    let interval = setInterval(() => {
-        currentIndex = (currentIndex + 1) % totalTestimonials;
-        showTestimonial(currentIndex);
-    }, 8000);
-    
-    // Navigation controls
-    document.querySelector('.left-arrow').addEventListener('click', () => {
-        clearInterval(interval);
-        currentIndex = (currentIndex - 1 + totalTestimonials) % totalTestimonials;
-        showTestimonial(currentIndex);
-        interval = setInterval(() => {
-            currentIndex = (currentIndex + 1) % totalTestimonials;
-            showTestimonial(currentIndex);
-        }, 8000);
-    });
-    
-    document.querySelector('.right-arrow').addEventListener('click', () => {
-        clearInterval(interval);
-        currentIndex = (currentIndex + 1) % totalTestimonials;
-        showTestimonial(currentIndex);
-        interval = setInterval(() => {
-            currentIndex = (currentIndex + 1) % totalTestimonials;
-            showTestimonial(currentIndex);
-        }, 8000);
-    });
-    
-    showTestimonial(currentIndex);
-}
-
-// Notification System
-function showNotification(message, isError = false) {
-    const notification = document.getElementById('custom-notification');
-    notification.className = isError ? 'error' : 'success';
-    
-    // Update notification content
-    const icon = notification.querySelector('i');
-    const text = notification.querySelector('p');
-    icon.className = isError ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
-    text.innerHTML = message || 'Thanks for your review! <i class="fas fa-heart"></i>';
-    
-    // Show notification
-    notification.classList.remove('hidden');
-    notification.classList.add('show');
-    
-    // Hide after delay
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => notification.classList.add('hidden'), 300);
-    }, 4000);
-}
-
-// Review Form Submission
-reviewForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const name = document.getElementById('review-name').value.trim();
-    const text = document.getElementById('review-text').value.trim();
-    
-    if (!name || !text) {
-        showNotification('Please fill in all fields', true);
+// Voice control setup
+function setupVoiceControl() {
+    if (!('webkitSpeechRecognition' in window)) {
+        console.log('Voice recognition not supported in this browser');
         return;
     }
+
+    const voiceBtn = document.createElement('button');
+    voiceBtn.id = 'voice-btn';
+    voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+    voiceBtn.title = 'Click and speak to navigate';
+    voiceBtn.setAttribute('aria-label', 'Voice control');
+    document.body.appendChild(voiceBtn);
     
-    try {
-        const response = await fetch('/api/testimonials', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ author: name, text })
-        });
-        
-        if (response.ok) {
-            showNotification();
-            reviewForm.reset();
-            // Reload testimonials to show the new one
-            loadTestimonials();
-        } else {
-            const error = await response.json();
-            showNotification(error.message || 'Failed to submit review', true);
+    const recognition = new webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    
+    voiceBtn.addEventListener('click', () => {
+        try {
+            recognition.start();
+            voiceBtn.classList.add('active');
+            showNotification('Listening... Speak now', false, 2000);
+        } catch (error) {
+            console.error('Voice recognition error:', error);
+            showNotification('Error starting voice control', true);
         }
-    } catch (error) {
-        console.error('Error submitting review:', error);
-        showNotification('Network error - please try again', true);
+    });
+    
+    recognition.onresult = (event) => {
+        const command = event.results[0][0].transcript.toLowerCase();
+        handleVoiceCommand(command);
+    };
+    
+    recognition.onerror = (event) => {
+        console.error('Voice recognition error:', event.error);
+        voiceBtn.classList.remove('active');
+    };
+    
+    recognition.onend = () => {
+        voiceBtn.classList.remove('active');
+    };
+}
+
+// Voice command handler
+function handleVoiceCommand(command) {
+    if (command.includes('submit') || command.includes('send')) {
+        reviewForm.dispatchEvent(new Event('submit'));
+        showNotification('Submitting form...', false);
+    } 
+    else if (command.includes('reset') || command.includes('clear')) {
+        reviewForm.reset();
+        showNotification('Form cleared', false);
     }
-});
+    else if (command.includes('home') || command.includes('top')) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        showNotification('Scrolled to top', false, 1000);
+    }
+    else if (command.includes('testimonials') || command.includes('reviews')) {
+        document.getElementById('testimonials').scrollIntoView({ behavior: 'smooth' });
+        showNotification('Scrolling to testimonials', false, 1000);
+    }
+    else {
+        showNotification(`Heard: "${command}"`, false, 2000);
+    }
+}
+
+// Dark/light mode toggle
+function setupModeToggle() {
+    if (!modeToggle) return;
+    
+    modeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-mode');
+        const icon = modeToggle.querySelector('i');
+        
+        if (document.body.classList.contains('light-mode')) {
+            icon.classList.replace('fa-moon', 'fa-sun');
+        } else {
+            icon.classList.replace('fa-sun', 'fa-moon');
+        }
+    });
+}
+
+// Helper function to sanitize input
+function sanitizeInput(input) {
+    const div = document.createElement('div');
+    div.textContent = input;
+    return div.innerHTML;
+}
+
+// Helper function to format date
+function formatDate(dateString) {
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+}
