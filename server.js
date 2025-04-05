@@ -10,13 +10,13 @@ const TESTIMONIALS_FILE = path.join(__dirname, 'test.json');
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname)); // Serve static files from root directory
+app.use(express.static(__dirname));
 
-// Ensure testimonials file exists
+// Initialize testimonials file
 function initializeTestimonialsFile() {
     if (!fs.existsSync(TESTIMONIALS_FILE)) {
         const defaultData = {
-            intro: "Here's what people say about working with me:",
+            intro: "Here are some feed backs📜 from people we worked together",
             testimonials: [],
             metadata: {
                 createdAt: new Date().toISOString(),
@@ -27,26 +27,31 @@ function initializeTestimonialsFile() {
     }
 }
 
-// Read testimonials from file
+// Read testimonials
 function readTestimonials() {
     try {
-        const data = fs.readFileSync(TESTIMONIALS_FILE, 'utf8');
-        return JSON.parse(data);
+        return JSON.parse(fs.readFileSync(TESTIMONIALS_FILE, 'utf8'));
     } catch (err) {
-        console.error('Error reading testimonials file:', err);
+        console.error('Error reading testimonials:', err);
         return null;
     }
 }
 
-// Write testimonials to file
+// Write testimonials
 function writeTestimonials(data) {
     try {
         fs.writeFileSync(TESTIMONIALS_FILE, JSON.stringify(data, null, 2));
         return true;
     } catch (err) {
-        console.error('Error writing to testimonials file:', err);
+        console.error('Error saving testimonials:', err);
         return false;
     }
+}
+
+// Generate a random ID
+function generateId() {
+    return Math.random().toString(36).substring(2, 15) + 
+           Math.random().toString(36).substring(2, 15);
 }
 
 // API Endpoints
@@ -72,27 +77,26 @@ app.post('/api/testimonials', (req, res) => {
         });
     }
 
-    const data = readTestimonials();
-    if (!data) {
-        return res.status(500).json({ 
-            success: false, 
-            message: 'Failed to load existing testimonials' 
-        });
-    }
+    const data = readTestimonials() || {
+        intro: "Here are some feed backs📜 from people we worked together",
+        testimonials: [],
+        metadata: {
+            createdAt: new Date().toISOString(),
+            lastUpdated: null
+        }
+    };
 
-    const newTestimonial = { 
-        text, 
+    const newTestimonial = {
+        id: generateId(),
+        text,
         author,
-        date: new Date().toISOString(),
-        id: Date.now().toString()
+        date: new Date().toISOString() // Real-time timestamp
     };
     
-    data.testimonials.unshift(newTestimonial);
+    data.testimonials.unshift(newTestimonial); // Add to beginning
     data.metadata.lastUpdated = new Date().toISOString();
     
-    const success = writeTestimonials(data);
-    
-    if (success) {
+    if (writeTestimonials(data)) {
         res.json({ 
             success: true, 
             message: 'Testimonial added successfully!',
@@ -106,16 +110,9 @@ app.post('/api/testimonials', (req, res) => {
     }
 });
 
-// Initialize file on startup
+// Initialize and start server
 initializeTestimonialsFile();
-
-// Serve frontend
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-// Start server
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
-    console.log(`Testimonials stored in: ${TESTIMONIALS_FILE}`);
+    console.log(`Testimonials file: ${TESTIMONIALS_FILE}`);
 });
